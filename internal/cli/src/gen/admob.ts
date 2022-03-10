@@ -24,6 +24,7 @@ const Actions = _.mapValues(
     adIsLoaded: null,
     adLoad: null,
     adShow: null,
+    clickThrough: null,
     // BannerAd
     bannerConfig: null,
     bannerLoad: null,

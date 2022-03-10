@@ -120,6 +120,14 @@ export class MobileAd<T extends MobileAdOptions = MobileAdOptions> {
     await this._init
     this._created = true
   }
+
+  protected async clickThrough({ x, y }: { x: number, y: number }) {
+    return execAsync(NativeActions.clickThrough, [{ x, y, id: this.id }]);
+    
+    // const percentageX = x / window.innerWidth * 100;
+    // const percentageY = y / window.innerHeight * 100;
+    // return execAsync(NativeActions.clickThrough, [{ x: percentageX, y: percentageY, id: this.id }])
+  }
 }
 
 export enum MaxAdContentRating {

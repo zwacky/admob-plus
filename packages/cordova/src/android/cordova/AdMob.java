@@ -124,6 +124,9 @@ public class AdMob extends CordovaPlugin implements Helper.Adapter {
                 callbackContext.success();
                 break;
             }
+            case Actions.CLICK_THROUGH: {
+                return executeClickThrough(ctx);
+            }
             default:
                 return false;
         }
@@ -186,6 +189,16 @@ public class AdMob extends CordovaPlugin implements Helper.Adapter {
             GenericAd ad = (GenericAd) ctx.optAdOrError();
             if (ad != null) {
                 ad.hide(ctx);
+            }
+        });
+        return true;
+    }
+
+    private boolean executeClickThrough(ExecuteContext ctx) {
+        cordova.getActivity().runOnUiThread(() -> {
+            GenericAd ad = (GenericAd) ctx.optAdOrError();
+            if (ad != null) {
+                ad.clickThrough(ctx);
             }
         });
         return true;

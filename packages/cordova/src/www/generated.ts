@@ -9,6 +9,7 @@ export enum NativeActions {
   bannerHide = 'bannerHide',
   bannerLoad = 'bannerLoad',
   bannerShow = 'bannerShow',
+  clickThrough = 'clickThrough',
   configRequest = 'configRequest',
   configure = 'configure',
   interstitialIsLoaded = 'interstitialIsLoaded',

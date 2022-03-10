@@ -51,4 +51,8 @@ export default class NativeAd extends MobileAd<NativeAdOptions> {
     window.addEventListener('resize', update)
     await update()
   }
+
+  async clickThrough({ x, y }: { x: number, y: number }) {
+    return super.clickThrough({ x, y });
+  }
 }

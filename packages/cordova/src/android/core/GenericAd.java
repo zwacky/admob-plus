@@ -19,4 +19,8 @@ public interface GenericAd {
     default void hide(Context ctx) {
         NOT_IMPLEMENTED();
     }
+
+    default void clickThrough(Context ctx) {
+        NOT_IMPLEMENTED();
+    }
 }

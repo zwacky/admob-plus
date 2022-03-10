@@ -11,6 +11,7 @@ const AdMob = {
   bannerHide() {},
   bannerLoad() {},
   bannerShow() {},
+  clickThrough() {},
   configRequest() {},
   configure() {},
   interstitialIsLoaded() {},
