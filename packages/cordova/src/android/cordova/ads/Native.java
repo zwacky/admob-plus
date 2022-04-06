@@ -114,19 +114,14 @@ public class Native extends AdBase {
     public void show(Context ctx) {
         if (view == null) {
             Integer layer = ctx.optInt("layer");
-            String bgColor = ctx.optString("bgColor");
             int index = layer == null ? 1 : layer;
-
             view = viewProvider.createView(mAd);
-
             // setting index to 0 so the ad layer goes behind the web view
             Objects.requireNonNull(getContentView()).addView(view, layer);
-
-            if (bgColor != null) {
-                // setting background to match JW app's
-                view.setBackgroundColor(Color.parseColor(bgColor));
-            }
         }
+        // setting background to match JW app's
+        String bgColor = ctx.optString("bgColor");
+        view.setBackgroundColor(bgColor != null ? Color.parseColor(bgColor) : Color.TRANSPARENT);
 
         view.setVisibility(View.VISIBLE);
         view.setX((float) dpToPx(ctx.optDouble("x", 0.0)));
