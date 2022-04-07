@@ -3,8 +3,7 @@ package admob.plus.cordova.ads;
 import android.graphics.Color;
 import android.graphics.Rect;
 
-import android.util.Log;
-
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -39,6 +38,7 @@ public class Native extends AdBase {
     private AdLoader mLoader;
     private NativeAd mAd;
     private View view;
+    private View background;
 
     public Native(ExecuteContext ctx) {
         super(ctx);
@@ -69,6 +69,14 @@ public class Native extends AdBase {
     @Override
     public void load(Context ctx) {
         clear();
+
+        // add background layer for background color
+        if (background == null) {
+            LayoutInflater inflater = LayoutInflater.from(getContentView().getContext());
+            background = new View(inflater.getContext());
+            background.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            Objects.requireNonNull(getContentView()).addView(background, 0);
+        }
 
         mLoader = new AdLoader.Builder(getActivity(), adUnitId)
                 .forNativeAd(nativeAd -> {
@@ -119,9 +127,11 @@ public class Native extends AdBase {
             // setting index to 0 so the ad layer goes behind the web view
             Objects.requireNonNull(getContentView()).addView(view, layer);
         }
-        // setting background to match JW app's
-        String bgColor = ctx.optString("bgColor");
-        view.setBackgroundColor(bgColor != null ? Color.parseColor(bgColor) : Color.TRANSPARENT);
+        // setting background of the layer behind the ad layer (hack to have background for app)
+        if (background != null) {
+            String bgColor = ctx.optString("bgColor");
+            background.setBackgroundColor(bgColor != null ? Color.parseColor(bgColor) : Color.TRANSPARENT);
+        }
 
         view.setVisibility(View.VISIBLE);
         view.setX((float) dpToPx(ctx.optDouble("x", 0.0)));
@@ -146,7 +156,7 @@ public class Native extends AdBase {
         viewProvider.didHide(this);
         ctx.resolve();
     }
-    
+
     @Override
     public void clickThrough(Context ctx) {
         double x = dpToPx((int) ctx.optDouble("x", 0.0));
@@ -212,7 +222,7 @@ public class Native extends AdBase {
 
         return null;
     }
-    
+
     private boolean isClickInRect(View v, int x, int y) {
         int[] location = new int[2];
         v.getLocationOnScreen(location);
