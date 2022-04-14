@@ -3,7 +3,6 @@ package admob.plus.cordova.ads;
 import android.graphics.Color;
 import android.graphics.Rect;
 
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -27,7 +26,6 @@ import admob.plus.cordova.Generated.Events;
 import admob.plus.core.Context;
 
 import static admob.plus.core.Helper.dpToPx;
-import static admob.plus.core.Helper.pxToDp;
 
 public class Native extends AdBase {
     public static final String VIEW_DEFAULT_KEY = "default";
@@ -38,7 +36,6 @@ public class Native extends AdBase {
     private AdLoader mLoader;
     private NativeAd mAd;
     private View view;
-    private View background;
 
     public Native(ExecuteContext ctx) {
         super(ctx);
@@ -69,14 +66,6 @@ public class Native extends AdBase {
     @Override
     public void load(Context ctx) {
         clear();
-
-        // add background layer for background color
-        if (background == null) {
-            LayoutInflater inflater = LayoutInflater.from(getContentView().getContext());
-            background = new View(inflater.getContext());
-            background.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-            Objects.requireNonNull(getContentView()).addView(background, 0);
-        }
 
         mLoader = new AdLoader.Builder(getActivity(), adUnitId)
                 .forNativeAd(nativeAd -> {
@@ -121,16 +110,11 @@ public class Native extends AdBase {
     @Override
     public void show(Context ctx) {
         if (view == null) {
-            Integer layer = ctx.optInt("layer");
-            int index = layer == null ? 1 : layer;
-            view = viewProvider.createView(mAd);
-            // setting index to 0 so the ad layer goes behind the web view
-            Objects.requireNonNull(getContentView()).addView(view, layer);
-        }
-        // setting background of the layer behind the ad layer (hack to have background for app)
-        if (background != null) {
             String bgColor = ctx.optString("bgColor");
-            background.setBackgroundColor(bgColor != null ? Color.parseColor(bgColor) : Color.TRANSPARENT);
+            view = viewProvider.createView(mAd);
+            view.setBackgroundColor(bgColor != null ? Color.parseColor(bgColor) : Color.TRANSPARENT);
+            // setting index to 0 so the ad layer goes behind the web view
+            Objects.requireNonNull(getContentView()).addView(view, 0);
         }
 
         view.setVisibility(View.VISIBLE);
